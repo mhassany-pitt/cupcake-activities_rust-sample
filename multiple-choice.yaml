@@ -1,0 +1,75 @@
+$schema: https://learning-contents.org/schemas/multiple-choice-question/0.1.0
+license: MIT
+locale: en-US
+id: mcq_bank_account_deposit
+title: Rust Struct Deposit Method
+description: Choose the correct implementation of the deposit method in Rust.
+authors:
+  - first: Jone
+    last: Doe
+    email: jone.doe@example.com
+    affiliation: University of John Doe
+pedagogy:
+  activity: multiple-choice-question
+  difficulty: intermediate
+  prereq_topics:
+    - structs
+  topics:
+    - structs
+    - methods
+include_choices: 3
+question: |
+  Given the following Rust struct definition for `BankAccount`:
+  
+  ```rust
+  struct BankAccount {
+      owner: String,
+      balance: i32,
+  }
+  ```
+  
+  Which of the following represents the correct implementation for a `deposit` member method in Rust that mutates the account balance and returns the new balance?
+choices:
+  - body: |
+      ```rust
+      fn deposit(&mut self, amount: i32) -> i32 {
+          if amount > 0 {
+              self.balance += amount;
+          }
+          self.balance
+      }
+      ```
+    role: solution
+    include: always
+    order: 1
+    explanations:
+      - body: |
+          This is the correct implementation. In Rust, modifying fields of an instance requires a mutable reference receiver (`&mut self`). It updates `self.balance` using `+=` and returns the final balance.
+  - body: |
+      ```rust
+      fn deposit(&self, amount: i32) -> i32 {
+          if amount > 0 {
+              self.balance += amount;
+          }
+          self.balance
+      }
+      ```
+    role: distractor
+    explanations:
+      - body: |
+          Incorrect. In Rust, taking `&self` (immutable borrow) prevents mutating `self.balance` and will trigger a compiler error: `cannot mutate immutable variable`.
+  - body: |
+      ```rust
+      fn deposit(self, amount: i32) -> i32 {
+          let mut balance = self.balance + amount;
+          balance
+      }
+      ```
+    role: distractor
+    explanations:
+      - body: |
+          Incorrect. Taking `self` takes ownership by value and drops the `BankAccount` at the end of the function rather than mutating it in place.
+  - body: None
+    role: distractor
+    include: always
+    order: 2

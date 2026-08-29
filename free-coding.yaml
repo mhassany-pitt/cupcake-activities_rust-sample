@@ -1,0 +1,91 @@
+$schema: https://learning-contents.org/schemas/free-coding/0.1.0
+source: main.rs
+license: MIT
+locale: en-US
+id: free_coding_bank_account
+title: Bank Account Management
+description: Implement and test bank account methods in Rust.
+authors:
+  - first: Jone
+    last: Doe
+    email: jone.doe@example.com
+    affiliation: University of John Doe
+pedagogy:
+  activity: free-coding
+  difficulty: novice
+  prereq_topics: [structs]
+  topics: [structs, methods, state]
+runtime:
+  language: rust
+statement: |
+  Implement a `transfer` sequence or method in `main` to move money from one `BankAccount` to another.
+  Ensure that money is withdrawn from the current account only if funds are sufficient, and deposited into the target account.
+executions:
+  - title: Transfer Alice to Bob
+    stdin: []
+    stdout: |-
+      Deposited 100
+      Withdrew 50
+      Balance: 250
+    console: |-
+      Deposited 100
+      Withdrew 50
+      Balance: 250
+    status: pass
+elements:
+  - type: locked
+    location:
+      snippet: |-
+        struct BankAccount {
+            owner: String,
+            balance: i32,
+        }
+
+        impl BankAccount {
+            fn new(owner: &str, balance: i32) -> Self {
+                Self {
+                    owner: owner.to_string(),
+                    balance,
+                }
+            }
+
+            fn deposit(&mut self, amount: i32) -> i32 {
+                if amount > 0 {
+                    self.balance += amount;
+                    println!("Deposited {}", amount);
+                }
+                self.balance
+            }
+
+            fn withdraw(&mut self, amount: i32) -> i32 {
+                if 0 < amount && amount <= self.balance {
+                    self.balance -= amount;
+                    println!("Withdrew {}", amount);
+                } else {
+                    println!("Insufficient funds");
+                }
+                self.balance
+            }
+        }
+  - type: editable
+    location:
+      snippet: |-
+        let mut account = BankAccount::new("Bob", 200);
+            account.deposit(100);
+            account.withdraw(50);
+            println!("Balance: {}", account.balance);
+    placeholder: |-
+      // Implement transfer sequence here
+          // Then test it with acc1 and acc2
+testcases:
+  - title: Simple Transfer
+    visible: true
+    stdin: []
+    stdout: |-
+      Deposited 100
+      Withdrew 50
+      Balance: 250
+    console: |-
+      Deposited 100
+      Withdrew 50
+      Balance: 250

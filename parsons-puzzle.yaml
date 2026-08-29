@@ -1,0 +1,93 @@
+$schema: https://learning-contents.org/schemas/parsons-puzzles/0.1.0
+license: MIT
+locale: en-US
+id: pp_bank_account
+source: main.rs
+title: Bank Transaction Logic
+description: Arrange the methods to correctly handle account transactions.
+authors:
+  - first: Jone
+    last: Doe
+    email: jone.doe@example.com
+    affiliation: University of John Doe
+pedagogy:
+  activity: parsons-puzzles
+  difficulty: novice
+  prereq_topics: [structs, methods]
+  topics: [structs, methods, conditional logic]
+runtime:
+  language: rust
+statement: |
+  Rearrange the blocks to correctly implement the deposit and withdrawal methods for the `BankAccount` struct. Make sure to:
+  1. Handle inputs safely
+  2. Validate account balances
+executions:
+  - title: Standard Transaction
+    stdout: |-
+      Deposited 100
+      Withdrew 50
+      Balance: 250
+    console: |-
+      Deposited 100
+      Withdrew 50
+      Balance: 250
+elements:
+  - type: block
+    location:
+      snippet: |2-
+            fn deposit(&mut self, amount: i32) -> i32 {
+                if amount > 0 {
+                    self.balance += amount;
+                    println!("Deposited {}", amount);
+                }
+                self.balance
+            }
+    choices:
+      - snippet: |-
+            fn deposit(&mut self, amount: i32) -> i32 {
+                if amount > 0 {
+                    self.balance += amount;
+                    println!("Deposited {}", amount);
+                }
+                self.balance
+            }
+        role: solution
+        explanations:
+          - body: |
+              Correctly adds the `amount` to `self.balance` if it is positive (`amount > 0`).
+  - type: block
+    location:
+      snippet: |2-
+            fn withdraw(&mut self, amount: i32) -> i32 {
+                if 0 < amount && amount <= self.balance {
+                    self.balance -= amount;
+                    println!("Withdrew {}", amount);
+                } else {
+                    println!("Insufficient funds");
+                }
+                self.balance
+            }
+    choices:
+      - snippet: |-
+            fn withdraw(&mut self, amount: i32) -> i32 {
+                if 0 < amount && amount <= self.balance {
+                    self.balance -= amount;
+                    println!("Withdrew {}", amount);
+                } else {
+                    println!("Insufficient funds");
+                }
+                self.balance
+            }
+        role: solution
+        explanations:
+          - body: |
+              Correctly subtracts the `amount` if funds are sufficient (`amount <= self.balance`).
+      - snippet: |-
+            fn withdraw(&mut self, amount: i32) -> i32 {
+                self.balance -= amount;
+                self.balance
+            }
+        role: distractor
+        explanations:
+          - body: |
+              This option is incorrect because it lacks the necessary funds check, which could lead to a **negative balance**! Always validate that `amount <= self.balance`.

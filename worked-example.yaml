@@ -1,0 +1,60 @@
+$schema: https://learning-contents.org/schemas/worked-example/0.1.0
+source: main.rs
+license: MIT
+locale: en-US
+id: we_bank_account
+title: Bank Account Management
+description: Learn how to use structs and methods to manage a bank account in Rust.
+authors:
+  - first: Jone
+    last: Doe
+    email: jone.doe@example.com
+    affiliation: University of John Doe
+pedagogy:
+  activity: worked-example
+  difficulty: novice
+  prereq_topics: []
+  topics:
+    - structs
+    - state
+runtime:
+  language: rust
+statement: |
+  This worked example demonstrates how `BankAccount` state is managed in Rust using structs and `impl` methods. We'll examine:
+  1. Struct constructor (`new`)
+  2. Deposit method (`deposit`)
+  3. Withdrawal method (`withdraw`)
+executions:
+  - title: Bob's Account
+    stdin: []
+    stdout: |-
+      Deposited 100
+      Withdrew 50
+      Balance: 250
+    console: |-
+      Deposited 100
+      Withdrew 50
+      Balance: 250
+    status: pass
+elements:
+  - type: explanation
+    location:
+      snippet: "fn new(owner: &str, balance: i32) -> Self {"
+    explanations:
+      - body: |
+          In Rust, constructors are typically associated functions named `new`:
+          ```rust
+          fn new(owner: &str, balance: i32) -> Self {
+              Self {
+                  owner: owner.to_string(),
+                  balance,
+              }
+          }
+          ```
+          This instantiates and returns a `BankAccount` struct.
+  - type: explanation
+    location:
+      snippet: "if 0 < amount && amount <= self.balance {"
+    explanations:
+      - body: |
+          This condition validates that the withdrawal transaction is correct: it checks if the `amount` is greater than `0` and is less than or equal to the current `self.balance`.
