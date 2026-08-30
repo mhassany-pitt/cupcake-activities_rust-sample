@@ -2,8 +2,8 @@ $schema: https://learning-contents.org/schemas/multiple-choice-question/0.1.0
 license: MIT
 locale: en-US
 id: mcq_bank_account_deposit
-title: Rust Struct Deposit Method
-description: Choose the correct implementation of the deposit method in Rust.
+title: Rust Struct Deposit Method Implementation
+description: Choose the correct implementation of the deposit method with appropriate borrowing semantics in Rust.
 authors:
   - first: Jone
     last: Doe
@@ -13,13 +13,18 @@ pedagogy:
   activity: multiple-choice-question
   difficulty: intermediate
   prereq_topics:
+    - basic-syntax
     - structs
+    - borrowing
   topics:
     - structs
     - methods
-include_choices: 3
+    - borrowing
+    - variable-scope
+    - state
+include_choices: 4
 question: |
-  Given the following Rust struct definition for `BankAccount`:
+  Given the following Rust struct definition:
   
   ```rust
   struct BankAccount {
@@ -28,7 +33,7 @@ question: |
   }
   ```
   
-  Which of the following represents the correct implementation for a `deposit` member method in Rust that mutates the account balance and returns the new balance?
+  Which of the following represents the correct implementation for a `deposit` method in an `impl BankAccount` block that validates positive deposit amounts, modifies the instance balance, and returns the new balance?
 choices:
   - body: |
       ```rust
@@ -44,7 +49,7 @@ choices:
     order: 1
     explanations:
       - body: |
-          This is the correct implementation. In Rust, modifying fields of an instance requires a mutable reference receiver (`&mut self`). It updates `self.balance` using `+=` and returns the final balance.
+          Correct! In Rust, mutating struct fields requires taking an exclusive mutable borrow (`&mut self`). This method verifies `amount > 0`, updates `self.balance` using `+=`, and implicitly returns the updated balance.
   - body: |
       ```rust
       fn deposit(&self, amount: i32) -> i32 {
@@ -57,19 +62,31 @@ choices:
     role: distractor
     explanations:
       - body: |
-          Incorrect. In Rust, taking `&self` (immutable borrow) prevents mutating `self.balance` and will trigger a compiler error: `cannot mutate immutable variable`.
+          Incorrect. In Rust, taking an immutable borrow (`&self`) prevents mutating struct fields. Attempting `self.balance += amount` causes a compiler error: `cannot assign to data in a & reference`.
   - body: |
       ```rust
-      fn deposit(self, amount: i32) -> i32 {
-          let mut balance = self.balance + amount;
-          balance
+      fn deposit(&mut self, amount: i32) -> i32 {
+          if amount > 0 {
+              self.balance =+ amount;
+          }
+          self.balance
       }
       ```
     role: distractor
     explanations:
       - body: |
-          Incorrect. Taking `self` takes ownership by value and drops the `BankAccount` at the end of the function rather than mutating it in place.
-  - body: None
+          Incorrect. In Rust, `=+` is parsed as assigning positive `amount` (`self.balance = +amount`), which overwrites the balance rather than accumulating funds with `+=`.
+  - body: |
+      ```rust
+      fn deposit(self, amount: i32) -> i32 {
+          if amount > 0 {
+              let mut balance = self.balance + amount;
+              return balance;
+          }
+          self.balance
+      }
+      ```
     role: distractor
-    include: always
-    order: 2
+    explanations:
+      - body: |
+          Incorrect. Taking `self` takes ownership by value (moves the struct). When the method completes, the `BankAccount` is dropped, rendering the caller's variable unusable in subsequent operations.

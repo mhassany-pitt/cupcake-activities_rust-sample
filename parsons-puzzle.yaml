@@ -3,8 +3,8 @@ license: MIT
 locale: en-US
 id: pp_bank_account
 source: main.rs
-title: Bank Transaction Logic
-description: Arrange the methods to correctly handle account transactions.
+title: Bank Account Methods and Associated Function in Rust
+description: Rearrange the Rust associated function and methods to properly manage BankAccount struct state and enforce transaction safety.
 authors:
   - first: Jone
     last: Doe
@@ -13,14 +13,23 @@ authors:
 pedagogy:
   activity: parsons-puzzles
   difficulty: novice
-  prereq_topics: [structs, methods]
-  topics: [structs, methods, conditional logic]
+  prereq_topics:
+    - basic-syntax
+    - structs
+  topics:
+    - structs
+    - methods
+    - borrowing
+    - constructors
+    - conditional-logic
 runtime:
   language: rust
 statement: |
-  Rearrange the blocks to correctly implement the deposit and withdrawal methods for the `BankAccount` struct. Make sure to:
-  1. Handle inputs safely
-  2. Validate account balances
+  Rearrange the blocks to correctly implement the associated constructor function and member methods for the `BankAccount` struct in Rust.
+  Make sure to:
+  1. Construct and return a `BankAccount` instance via `Self`.
+  2. Implement the `deposit` method with a mutable borrow (`&mut self`) and positive input validation.
+  3. Implement the `withdraw` method with strict overdraft protection and insufficient funds notification.
 executions:
   - title: Standard Transaction
     stdout: |-
@@ -31,63 +40,136 @@ executions:
       Deposited 100
       Withdrew 50
       Balance: 250
+    status: pass
 elements:
   - type: block
+    group: bank-members
     location:
-      snippet: |2-
-            fn deposit(&mut self, amount: i32) -> i32 {
-                if amount > 0 {
-                    self.balance += amount;
-                    println!("Deposited {}", amount);
+      snippet: |-
+            fn new(owner: &str, balance: i32) -> Self {
+                Self {
+                    owner: owner.to_string(),
+                    balance,
                 }
-                self.balance
             }
     choices:
       - snippet: |-
-            fn deposit(&mut self, amount: i32) -> i32 {
-                if amount > 0 {
-                    self.balance += amount;
-                    println!("Deposited {}", amount);
+            fn new(owner: &str, balance: i32) -> Self {
+                Self {
+                    owner: owner.to_string(),
+                    balance,
                 }
-                self.balance
             }
         role: solution
         explanations:
           - body: |
-              Correctly adds the `amount` to `self.balance` if it is positive (`amount > 0`).
+              Correct! Constructs and returns a new `Self` instance by converting the borrowed `&str` to an owned `String` and initializing `balance`.
+      - snippet: |-
+            fn new(owner: &str, balance: i32) -> Self {
+                Self {
+                    owner: owner,
+                    balance,
+                }
+            }
+        role: distractor
+        explanations:
+          - body: |
+              Incorrect. `owner` is a borrowed string slice (`&str`), but the struct field expects an owned `String`. Omitting `.to_string()` causes a type mismatch compilation error.
   - type: block
+    group: bank-members
     location:
-      snippet: |2-
-            fn withdraw(&mut self, amount: i32) -> i32 {
-                if 0 < amount && amount <= self.balance {
-                    self.balance -= amount;
-                    println!("Withdrew {}", amount);
-                } else {
-                    println!("Insufficient funds");
+      snippet: |-
+            fn deposit(&mut self, amount: i32) -> i32 {
+                if amount > 0 {
+                    self.balance += amount;
+                    println!("Deposited {}", amount);
                 }
                 self.balance
             }
     choices:
       - snippet: |-
-            fn withdraw(&mut self, amount: i32) -> i32 {
-                if 0 < amount && amount <= self.balance {
-                    self.balance -= amount;
-                    println!("Withdrew {}", amount);
-                } else {
-                    println!("Insufficient funds");
+            fn deposit(&mut self, amount: i32) -> i32 {
+                if amount > 0 {
+                    self.balance += amount;
+                    println!("Deposited {}", amount);
                 }
                 self.balance
             }
         role: solution
         explanations:
           - body: |
-              Correctly subtracts the `amount` if funds are sufficient (`amount <= self.balance`).
+              Correct! Uses a mutable borrow receiver `&mut self` to update `self.balance` when `amount > 0` and returns the final balance expression.
       - snippet: |-
-            fn withdraw(&mut self, amount: i32) -> i32 {
-                self.balance -= amount;
+            fn deposit(&self, amount: i32) -> i32 {
+                if amount > 0 {
+                    self.balance += amount;
+                    println!("Deposited {}", amount);
+                }
                 self.balance
             }
         role: distractor
         explanations:
           - body: |
-              This option is incorrect because it lacks the necessary funds check, which could lead to a **negative balance**! Always validate that `amount <= self.balance`.
+              Incorrect. In Rust, taking an immutable borrow `&self` prevents mutating struct fields; attempting `self.balance += amount` causes a compiler error: `cannot assign to data in a & reference`.
+      - snippet: |-
+            fn deposit(&mut self, amount: i32) -> i32 {
+                self.balance += amount;
+                println!("Deposited {}", amount);
+                self.balance
+            }
+        role: distractor
+        explanations:
+          - body: |
+              Incorrect. Omits the `if amount > 0` input validation guard, allowing negative or zero deposit amounts to alter account funds.
+  - type: block
+    group: bank-members
+    location:
+      snippet: |-
+            fn withdraw(&mut self, amount: i32) -> i32 {
+                if 0 < amount && amount <= self.balance {
+                    self.balance -= amount;
+                    println!("Withdrew {}", amount);
+                } else {
+                    println!("Insufficient funds");
+                }
+                self.balance
+            }
+    choices:
+      - snippet: |-
+            fn withdraw(&mut self, amount: i32) -> i32 {
+                if 0 < amount && amount <= self.balance {
+                    self.balance -= amount;
+                    println!("Withdrew {}", amount);
+                } else {
+                    println!("Insufficient funds");
+                }
+                self.balance
+            }
+        role: solution
+        explanations:
+          - body: |
+              Correct! Verifies that `0 < amount && amount <= self.balance`, debits the account when funds are sufficient, prints an error message when funds are insufficient, and returns `self.balance`.
+      - snippet: |-
+            fn withdraw(&mut self, amount: i32) -> i32 {
+                self.balance -= amount;
+                println!("Withdrew {}", amount);
+                self.balance
+            }
+        role: distractor
+        explanations:
+          - body: |
+              Incorrect. Unconditionally deducts `amount` without verifying if `amount <= self.balance`, allowing the account balance to plunge into negative numbers.
+      - snippet: |-
+            fn withdraw(&mut self, amount: i32) -> i32 {
+                if 0 < amount && amount > self.balance {
+                    self.balance -= amount;
+                    println!("Withdrew {}", amount);
+                } else {
+                    println!("Insufficient funds");
+                }
+                self.balance
+            }
+        role: distractor
+        explanations:
+          - body: |
+              Incorrect. The comparison `amount > self.balance` inverts the logic: it only allows withdrawals when the amount exceeds the balance, guaranteeing an overdraft on every successful withdrawal!

@@ -3,8 +3,8 @@ source: main.rs
 license: MIT
 locale: en-US
 id: we_bank_account
-title: Bank Account Management
-description: Learn how to use structs and methods to manage a bank account in Rust.
+title: Bank Account Management in Rust
+description: Learn how to use Rust structs, impl blocks, associated constructor functions, mutable borrowing (&mut self), and macros to manage state.
 authors:
   - first: Jone
     last: Doe
@@ -13,17 +13,25 @@ authors:
 pedagogy:
   activity: worked-example
   difficulty: novice
-  prereq_topics: []
+  prereq_topics:
+    - basic-syntax
+    - variables
   topics:
     - structs
+    - methods
+    - borrowing
+    - constructors
     - state
+    - conditional-logic
 runtime:
   language: rust
 statement: |
-  This worked example demonstrates how `BankAccount` state is managed in Rust using structs and `impl` methods. We'll examine:
-  1. Struct constructor (`new`)
-  2. Deposit method (`deposit`)
-  3. Withdrawal method (`withdraw`)
+  This worked example demonstrates how `BankAccount` state and operations are modeled in Rust using `struct` records and `impl` member methods with explicit borrowing semantics. We'll examine:
+  1. The `BankAccount` struct declaration with typed fields (`String` and `i32`).
+  2. The `BankAccount::new` associated function acting as an idiomatic constructor.
+  3. The `deposit` method requiring a mutable borrow (`&mut self`) to update state.
+  4. The `withdraw` method with compound guard logic protecting against overdrafts.
+  5. The `main` driver function demonstrating mutable variable binding (`let mut`), method calls, and `println!` formatting.
 executions:
   - title: Bob's Account
     stdin: []
@@ -39,22 +47,83 @@ executions:
 elements:
   - type: explanation
     location:
-      snippet: "fn new(owner: &str, balance: i32) -> Self {"
+      snippet: |-
+        struct BankAccount {
+            owner: String,
+            balance: i32,
+        }
     explanations:
       - body: |
-          In Rust, constructors are typically associated functions named `new`:
-          ```rust
-          fn new(owner: &str, balance: i32) -> Self {
-              Self {
-                  owner: owner.to_string(),
-                  balance,
-              }
-          }
-          ```
-          This instantiates and returns a `BankAccount` struct.
+          ### 1. Struct Declaration
+          * `struct BankAccount`: Defines a custom composite data type in Rust.
+          * `owner: String`: Stores an owned, heap-allocated string buffer.
+          * `balance: i32`: Primitive 32-bit signed integer storing the current account balance.
   - type: explanation
     location:
-      snippet: "if 0 < amount && amount <= self.balance {"
+      snippet: |-
+            fn new(owner: &str, balance: i32) -> Self {
+                Self {
+                    owner: owner.to_string(),
+                    balance,
+                }
+            }
     explanations:
       - body: |
-          This condition validates that the withdrawal transaction is correct: it checks if the `amount` is greater than `0` and is less than or equal to the current `self.balance`.
+          ### 2. Associated Constructor Function (`new`)
+          * In Rust, constructors are conventionally associated functions named `new` within an `impl` block that return `Self`.
+          * `owner: &str`: Accepts a borrowed string slice for flexibility, and converts it to an owned `String` via `.to_string()`.
+          * `balance`: Uses Rust's field init shorthand where field and parameter share the same name.
+  - type: explanation
+    location:
+      snippet: |-
+            fn deposit(&mut self, amount: i32) -> i32 {
+                if amount > 0 {
+                    self.balance += amount;
+                    println!("Deposited {}", amount);
+                }
+                self.balance
+            }
+    explanations:
+      - body: |
+          ### 3. The `deposit` Method and Mutable Borrowing (`&mut self`)
+          * **Mutable Receiver `&mut self`**: In Rust, modifying struct state requires taking an exclusive mutable borrow (`&mut self`).
+          * **Input Validation**: `if amount > 0` acts as a guard condition ensuring that only positive amounts are credited.
+          * **State Mutation**: `self.balance += amount;` mutates the struct field in place.
+          * **Implicit Return**: The final expression `self.balance` (without a trailing semicolon) yields the updated balance as the method's return value.
+  - type: explanation
+    location:
+      snippet: |-
+            fn withdraw(&mut self, amount: i32) -> i32 {
+                if 0 < amount && amount <= self.balance {
+                    self.balance -= amount;
+                    println!("Withdrew {}", amount);
+                } else {
+                    println!("Insufficient funds");
+                }
+                self.balance
+            }
+    explanations:
+      - body: |
+          ### 4. The `withdraw` Method and Overdraft Protection
+          * **Compound Guard Condition**: `if 0 < amount && amount <= self.balance` checks two conditions with `&&`:
+            1. `0 < amount`: The withdrawal amount must be strictly positive.
+            2. `amount <= self.balance`: The withdrawal must not exceed current funds (allowing full withdrawals down to 0).
+          * **Successful Debit**: When valid, `self.balance -= amount;` debits the balance and logs confirmation.
+          * **Fallback Branch**: The `else` block catches overdraft attempts or invalid amounts by printing `"Insufficient funds"` without modifying `self.balance`.
+          * **Return Value**: Yields `self.balance` in all branches.
+  - type: explanation
+    location:
+      snippet: |-
+        fn main() {
+            let mut account = BankAccount::new("Bob", 200);
+            account.deposit(100);
+            account.withdraw(50);
+            println!("Balance: {}", account.balance);
+        }
+    explanations:
+      - body: |
+          ### 5. Execution Flow in `main`
+          * `let mut account = BankAccount::new("Bob", 200);`: The `mut` keyword is required because subsequent method calls (`deposit` and `withdraw`) borrow `account` mutably.
+          * `account.deposit(100);`: Automatically borrows `account` as `&mut account`, credits 100 (balance becomes 300), and prints `"Deposited 100"`.
+          * `account.withdraw(50);`: Debits 50 (balance becomes 250) and prints `"Withdrew 50"`.
+          * `println!("Balance: {}", account.balance);`: Reads field `account.balance` and outputs `"Balance: 250"`.
