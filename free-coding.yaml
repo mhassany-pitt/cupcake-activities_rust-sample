@@ -1,29 +1,27 @@
----
-"$schema": https://learning-contents.org/schemas/free-coding/0.1.0
+$schema: https://learning-contents.org/schemas/free-coding/0.1.0
 source: main.rs
 license: MIT
 locale: en-US
 id: free_coding_bank_account
 title: Bank Account Management in Rust
-description: Instantiate a BankAccount struct, execute deposit and withdraw method
-  calls, and inspect the resulting balance.
+description: Instantiate a BankAccount struct, execute deposit and withdraw method calls, and inspect the resulting balance.
 authors:
-- first: Jone
-  last: Doe
-  email: jone.doe@example.com
-  affiliation: University of John Doe
+  - first: Jone
+    last: Doe
+    email: jone.doe@example.com
+    affiliation: University of John Doe
 pedagogy:
   activity: free-coding
   difficulty: novice
   prereq_topics:
-  - basic-syntax
-  - structs
+    - basic-syntax
+    - structs
   topics:
-  - structs
-  - methods
-  - borrowing
-  - constructors
-  - state
+    - structs
+    - methods
+    - borrowing
+    - constructors
+    - state
 runtime:
   language: rust
 statement: |
@@ -33,77 +31,77 @@ statement: |
   3. Call `withdraw` with an amount of `50`.
   4. Print the final balance using `println!("Balance: {}", account.balance)`.
 executions:
-- title: Standard Transaction Sequence
-  stdin: []
-  stdout: |-
-    Deposited 100
-    Withdrew 50
-    Balance: 250
-  console: |-
-    Deposited 100
-    Withdrew 50
-    Balance: 250
-  status: pass
+  - title: Standard Transaction Sequence
+    stdin: []
+    stdout: |-
+      Deposited 100
+      Withdrew 50
+      Balance: 250
+    console: |-
+      Deposited 100
+      Withdrew 50
+      Balance: 250
+    status: pass
 elements:
-- type: locked
-  location:
-    snippet: |-
-      struct BankAccount {
-          owner: String,
-          balance: i32,
-      }
+  - type: locked
+    location:
+      snippet: |-
+        struct BankAccount {
+            owner: String,
+            balance: i32,
+        }
 
-      impl BankAccount {
-          fn new(owner: &str, balance: i32) -> Self {
-              Self {
-                  owner: owner.to_string(),
-                  balance,
-              }
-          }
+        impl BankAccount {
+            fn new(owner: &str, balance: i32) -> Self {
+                Self {
+                    owner: owner.to_string(),
+                    balance,
+                }
+            }
 
-          fn deposit(&mut self, amount: i32) -> i32 {
-              if amount > 0 {
-                  self.balance += amount;
-                  println!("Deposited {}", amount);
-              }
-              self.balance
-          }
+            fn deposit(&mut self, amount: i32) -> i32 {
+                if amount > 0 {
+                    self.balance += amount;
+                    println!("Deposited {}", amount);
+                }
+                self.balance
+            }
 
-          fn withdraw(&mut self, amount: i32) -> i32 {
-              if 0 < amount && amount <= self.balance {
-                  self.balance -= amount;
-                  println!("Withdrew {}", amount);
-              } else {
-                  println!("Insufficient funds");
-              }
-              self.balance
-          }
-      }
-- type: editable
-  location:
-    snippet: |2-
-          let mut account = BankAccount::new("Bob", 200);
-          account.deposit(100);
-          account.withdraw(50);
-          println!("Balance: {}", account.balance);
-  placeholder: |-
-    // 1. Create mutable BankAccount for "Bob" with 200 initial balance
+            fn withdraw(&mut self, amount: i32) -> i32 {
+                if 0 < amount && amount <= self.balance {
+                    self.balance -= amount;
+                    println!("Withdrew {}", amount);
+                } else {
+                    println!("Insufficient funds");
+                }
+                self.balance
+            }
+        }
+  - type: editable
+    location:
+      snippet: |2-
+            let mut account = BankAccount::new("Bob", 200);
+            account.deposit(100);
+            account.withdraw(50);
+            println!("Balance: {}", account.balance);
+    placeholder: |-
+      // 1. Create mutable BankAccount for "Bob" with 200 initial balance
 
-        // 2. Deposit 100
+          // 2. Deposit 100
 
-        // 3. Withdraw 50
+          // 3. Withdraw 50
 
-        // 4. Output formatted balance
+          // 4. Output formatted balance
 testcases:
-- title: Standard Account Workflow
-  visible: true
-  stdin: []
-  stdout: |-
-    Deposited 100
-    Withdrew 50
-    Balance: 250
-  console: |-
-    Deposited 100
-    Withdrew 50
-    Balance: 250
-  status: pass
+  - title: Standard Account Workflow
+    visible: true
+    stdin: []
+    stdout: |-
+      Deposited 100
+      Withdrew 50
+      Balance: 250
+    console: |-
+      Deposited 100
+      Withdrew 50
+      Balance: 250
+    status: pass
