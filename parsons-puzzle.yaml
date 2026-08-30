@@ -79,7 +79,6 @@ elements:
     group: bank-members
     location:
       snippet: |2-
-
             fn deposit(&mut self, amount: i32) -> i32 {
                 if amount > 0 {
                     self.balance += amount;
@@ -89,7 +88,6 @@ elements:
             }
     choices:
       - snippet: |2-
-
               fn deposit(&mut self, amount: i32) -> i32 {
                   if amount > 0 {
                       self.balance += amount;
@@ -127,7 +125,6 @@ elements:
     group: bank-members
     location:
       snippet: |2-
-
             fn withdraw(&mut self, amount: i32) -> i32 {
                 if 0 < amount && amount <= self.balance {
                     self.balance -= amount;
@@ -139,7 +136,6 @@ elements:
             }
     choices:
       - snippet: |2-
-
               fn withdraw(&mut self, amount: i32) -> i32 {
                   if 0 < amount && amount <= self.balance {
                       self.balance -= amount;
