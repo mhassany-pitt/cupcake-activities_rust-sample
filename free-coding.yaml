@@ -86,12 +86,9 @@ elements:
             println!("Balance: {}", account.balance);
     placeholder: |-
       // 1. Create mutable BankAccount for "Bob" with 200 initial balance
-
-          // 2. Deposit 100
-
-          // 3. Withdraw 50
-
-          // 4. Output formatted balance
+      // 2. Deposit 100
+      // 3. Withdraw 50
+      // 4. Output formatted balance
 testcases:
   - title: Standard Account Workflow
     visible: true
