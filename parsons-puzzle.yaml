@@ -24,14 +24,17 @@ pedagogy:
     - conditional-logic
 runtime:
   language: rust
+  version: 2021
 statement: |
   Rearrange the blocks to correctly implement the associated constructor function and member methods for the `BankAccount` struct in Rust.
   Make sure to:
   1. Construct and return a `BankAccount` instance via `Self`.
   2. Implement the `deposit` method with a mutable borrow (`&mut self`) and positive input validation.
   3. Implement the `withdraw` method with strict overdraft protection and insufficient funds notification.
-executions:
+testcases:
   - title: Standard Transaction
+    visible: true
+    stdin: []
     stdout: |-
       Deposited 100
       Withdrew 50
@@ -41,6 +44,16 @@ executions:
       Withdrew 50
       Balance: 250
     status: pass
+    hints:
+      - "Arrange the code blocks in logical sequential order from initialization to final output."
+      - "Ensure correct block indentation where applicable."
+    feedback:
+      - on_pass:
+          - explanations:
+              - "Correct! All blocks are sequenced properly to produce the expected output."
+        on_fail:
+          - explanations:
+              - "The block ordering or indentation is incorrect. Re-examine the flow of execution."
 elements:
   - type: block
     group: bank-members
@@ -61,6 +74,7 @@ elements:
                   }
               }
         role: solution
+        indent: 0
         explanations:
           - body: |
               Correct! Constructs and returns a new `Self` instance by converting the borrowed `&str` to an owned `String` and initializing `balance`.
@@ -96,6 +110,7 @@ elements:
                   self.balance
               }
         role: solution
+        indent: 0
         explanations:
           - body: |
               Correct! Uses a mutable borrow receiver `&mut self` to update `self.balance` when `amount > 0` and returns the final balance expression.
@@ -124,6 +139,7 @@ elements:
                   self.balance
               }
         role: solution
+        indent: 0
         explanations:
           - body: |
               Correct! Verifies that `0 < amount && amount <= self.balance`, debits the account when funds are sufficient, prints an error message when funds are insufficient, and returns `self.balance`.
